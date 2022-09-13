@@ -1,7 +1,7 @@
 (* ::Package:: *)
 
 (* ::Title:: *)
-(*Unambiguous quantum state discrimination \[LongDash] animation*)
+(*Minimum error quantum state discrimination \[LongDash] animation*)
 
 
 (* ::Subtitle:: *)
@@ -9,8 +9,8 @@
 
 
 (* ::Text:: *)
-(*Source code for file: "Unambiguous_quantum_state_discrimination_-_animation.gif"*)
-(*https://commons.wikimedia.org/wiki/File:Unambiguous_quantum_state_discrimination_-_animation.gif*)
+(*Source code for file: "Minimum_error_quantum_state_discrimination_-_animation.gif"*)
+(*https://commons.wikimedia.org/wiki/File:Minimum_error_quantum_state_discrimination_-_animation.gif*)
 (*Version: "Wolfram language 12.0.0 for Microsoft Windows (64-bit) (April 6, 2019)"*)
 
 
@@ -23,14 +23,10 @@ vec[char_,idx_,ang_,italic_:True,len_:1,off_:.15]:={Arrow[{{0,0},len AngleVector
 
 
 (* ::Input::Initialization:: *)
-grUSD[ang1_,ang2_,stage_]:=Module[{angavg=(ang1+ang2)/2,sceneAux1,sceneAux2,scenePro,prefac,prefacI,off},
-prefac=1/Sqrt[1+Abs[Cos[ang2-ang1]]];
-prefacI=prefac Sqrt[2Abs[Cos[ang2-ang1]]];
-off=prefac-1+0.15;
-
-sceneAux1={RGBColor[0.4, 0.4, 1.],Disk[{0,0},.12,{ang2,ang2-\[Pi]/2}],vec["x",1,ang2-\[Pi]/2]};
-sceneAux2={RGBColor[0.4, 0.4, 1.],Disk[{0,0},.14,{ang1,ang1+\[Pi]/2}],vec["x",2,ang1+\[Pi]/2]};
-scenePro={Blue,Disk[{0,0},.14,{ang1,ang1+\[Pi]/2}],Disk[{0,0},.12,{ang2,ang2-\[Pi]/2}],vec["e",2,ang1+\[Pi]/2,True,prefac,off],vec["e",1,ang2-\[Pi]/2,True,prefac,off],vec["e","?",(ang1+ang2)/2,True,prefacI,Min[prefacI-1+0.2,0.15]]};
+grME[ang1_,ang2_,stage_]:=Module[{angavg=(ang1+ang2)/2,sceneAng,sceneAux,scenePro},
+sceneAng={Orange,Circle[{0,0},.5,{ang1,ang2}],Text[Style["\[Theta]",30,FontFamily->"Times"],.6AngleVector[(angavg+#)/2],{0,0},AngleVector[(angavg+#)/2]]&/@{ang1,ang2}};
+sceneAux={RGBColor[0.4, 0.4, 1.],vec["x",1,angavg],vec["x",2,angavg-\[Pi]/2],Disk[{0,0},.12,{angavg,angavg-\[Pi]/2}]};
+scenePro={Blue,vec["e",1,angavg-\[Pi]/4],vec["e",2,angavg+\[Pi]/4],Disk[{0,0},.1,{angavg+\[Pi]/4,angavg-\[Pi]/4}]};
 
 Graphics[{
 {Circle[{0,0},1]},
@@ -40,8 +36,8 @@ Graphics[{
 
 Switch[stage,
 1,{},
-2,{sceneAux1},
-3,{sceneAux1,sceneAux2},
+2,{sceneAng,sceneAux},
+3,{sceneAng,sceneAux,scenePro},
 4,{scenePro}
 ],
 
@@ -52,13 +48,13 @@ Switch[stage,
 
 
 (* ::Input::Initialization:: *)
-animationUSD[t_]:=Module[{tstages=0.5,ang1=0.2,ang2=0.8,t1,t2},
+animationME[t_]:=Module[{tstages=0.5,ang1=0.2,ang2=0.8,t1,t2},
 {t1,t2}=tstages+(1-tstages){3,6}/7;
 Which[
-t<tstages,grUSD[ang1,ang2,Quotient[Rescale[t,{0,tstages},{1,5}],1]],
-tstages<=t<t1,grUSD[ang1+\[Pi]/6 UnitTriangle[Rescale[t,{tstages,t1},1.2{-1,1}]],ang2,4],
-t1<=t<t2,grUSD[ang1,ang2+\[Pi]/4 UnitTriangle[Rescale[t,{t1,t2},1.2{-1,1}]],4],
-t2<=t,grUSD[ang1,ang2,4]
+t<tstages,grME[ang1,ang2,Quotient[Rescale[t,{0,tstages},{1,5}],1]],
+tstages<=t<t1,grME[ang1+\[Pi]/6 UnitTriangle[Rescale[t,{tstages,t1},1.2{-1,1}]],ang2,4],
+t1<=t<t2,grME[ang1,ang2+\[Pi]/4 UnitTriangle[Rescale[t,{t1,t2},1.2{-1,1}]],4],
+t2<=t,grME[ang1,ang2,4]
 ]
 ]
 
@@ -75,8 +71,8 @@ Export[name<>".gif",seq,AnimationRepetitions->Infinity,"DisplayDurations"->durs,
 
 
 (* ::Input:: *)
-(*Manipulate[animationUSD[t],{t,0,1},SaveDefinitions->True]*)
+(*Manipulate[animationME[t],{t,0,1},SaveDefinitions->True]*)
 
 
 (* ::Input:: *)
-(*exportAnimation[animationUSD,"animUSD"]*)
+(*exportAnimation[animationME,"animME"]*)
